@@ -6,6 +6,9 @@ import Register from "../views/Register"
 import Activacation from "../views/Activacation";
 import setting from "../views/setting";
 import discussDetail from "../views/discussDetail";
+import blankPage from "../views/blankPage";
+import letter from "../views/letter";
+import letterDetail from "../views/letter-detail"
 
 Vue.use(Router)
 
@@ -45,6 +48,21 @@ const router =  new Router({
       path: '/discussDetail',
       name: 'discussDetail',
       component: discussDetail
+    },
+    {
+      path: '/blankPage',
+      name: 'blankPage',
+      component: blankPage
+    },
+    {
+      path: '/letter',
+      name: 'letter',
+      component: letter
+    },
+    {
+      path: '/letterDetail',
+      name: 'letterDetail',
+      component: letterDetail
     }
   ]
 })

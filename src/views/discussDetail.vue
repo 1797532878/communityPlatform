@@ -96,23 +96,27 @@
                       <li class="d-inline ml-2"><a :href="'#huifu' + index" data-toggle="collapse" class="text-primary">回复</a></li>
                     </ul>
                     <div :id="'huifu' + index" class="mt-4 collapse">
+                    <form>
                       <div>
-                        <input type="text" class="input-size" :placeholder="'回复' + reply.user.username"/>
+                        <input type="text" v-model="replyPostForm.content" class="input-size" :placeholder="'回复' + reply.user.username"/>
                       </div>
                       <div class="text-right mt-2">
-                        <button type="button" class="btn btn-primary btn-sm" >&nbsp;&nbsp;回&nbsp;&nbsp;复&nbsp;&nbsp;</button>
+                        <button type="button" @click="replyPost(comment.comment.id,reply.user.id,2)" class="btn btn-primary btn-sm" >&nbsp;&nbsp;回&nbsp;&nbsp;复&nbsp;&nbsp;</button>
                       </div>
+                    </form>
                     </div>
                   </div>
                 </li>
                 <!-- 回复输入框 -->
                 <li class="pb-3 pt-3">
-                  <div>
-                    <input type="text" class="input-size" placeholder="请输入你的观点"/>
-                  </div>
-                  <div class="text-right mt-2">
-                    <button type="button" class="btn btn-primary btn-sm" >&nbsp;&nbsp;回&nbsp;&nbsp;复&nbsp;&nbsp;</button>
-                  </div>
+                  <form>
+                    <div>
+                      <input type="text" v-model="replyPostForm.content" class="input-size" placeholder="请输入你的观点"/>
+                    </div>
+                    <div class="text-right mt-2">
+                      <button type="button" @click="replyPost(comment.comment.id,0,2)" class="btn btn-primary btn-sm" >&nbsp;&nbsp;回&nbsp;&nbsp;复&nbsp;&nbsp;</button>
+                    </div>
+                  </form>
                 </li>
               </ul>
               </div>
@@ -130,18 +134,18 @@
         </el-pagination>
       </div>
       <!-- 回帖输入 -->
-      <div class="container mt-3">
+      <div class="container mt-3" :model="replyPostForm" :rules="rules">
         <form class="replyform">
           <p class="mt-3">
             <el-input
               type="textarea"
               :autosize = "{minRows: 3}"
               placeholder="请在这里畅所欲言吧"
-              v-model="textarea">
+              v-model="replyPostForm.content">
             </el-input>
           </p>
           <p class="text-right">
-            <button type="submit" class="btn btn-primary btn-sm">&nbsp;&nbsp;回&nbsp;&nbsp;帖&nbsp;&nbsp;</button>
+            <button type="button" @click="replyPost(post.id,0,1)" class="btn btn-primary btn-sm">&nbsp;&nbsp;回&nbsp;&nbsp;帖&nbsp;&nbsp;</button>
           </p>
         </form>
       </div>
@@ -152,7 +156,8 @@
 </template>
 
 <script>
-import Header from "../components/Header";
+import Header from "../components/Header"
+import qs from 'QS'
 export default {
   components: {
     Header
@@ -162,7 +167,18 @@ export default {
       post: {},
       user: {},
       comments: [],
-      textarea: '',
+      replyPostForm: {
+        content: '',
+        entityType: 0,
+        entityId: 0,
+        targetId: 0,
+        userId: 0,
+      },
+      rules: {
+        content: [
+          { min: 1, max: 1000, message: '长度在 1 到 1000 个字符', trigger: 'blur' }
+        ]
+      },
       page: {
         current: 1,
         limit: 10,
@@ -201,6 +217,32 @@ export default {
         _this.comments = res.data.comment
         _this.page = res.data.page
       })
+    },
+    replyPost (id,targetId,type) {
+      const _this = this
+      this.replyPostForm.userId = _this.user.id
+      //注意这里的id类型
+      this.replyPostForm.entityId = id
+      this.replyPostForm.entityType = type
+      console.log(targetId)
+      this.replyPostForm.targetId = targetId === 0 ? 0 : targetId
+      console.log(this.replyPostForm)
+      _this.$axios.post(
+      "http://localhost:8081/communityPlatform/comment/add/" + _this.post.id,
+      qs.stringify(_this.replyPostForm)
+      ).then( res => {
+      console.log(res)
+      if (res.data.code === 400) {
+        _this.$message.error(res.data.msg)
+      }
+      if (res.data.code === 200) {
+        _this.$router.replace({
+          path: '/blankPage',
+          name: 'blankPage'
+        })
+        sessionStorage.setItem("click_postId",res.data.discussPostId)
+      }
+    })
     }
   }
 }

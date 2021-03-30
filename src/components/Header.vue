@@ -16,7 +16,7 @@
                 <a class="nav-link" href="/index">首页</a>
               </li>
               <li class="nav-item ml-3 btn-group-vertical">
-                <a class="nav-link position-relative" v-show="isLogin" href="letter.html">消息<span class="badge badge-danger">12</span></a>
+                <a class="nav-link position-relative" v-show="isLogin" href="/letter">消息<span class="badge badge-danger">12</span></a>
               </li>
               <li class="nav-item ml-3 btn-group-vertical">
                 <a class="nav-link" v-show="!isLogin" href="/register">注册</a>
