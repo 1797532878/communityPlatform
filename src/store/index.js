@@ -7,6 +7,7 @@ export default new Vuex.Store({
   state: {
     userId: '',
     click_postId: 0,
+    blankPageTo: ''
   },
 
   mutations: {

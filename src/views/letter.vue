@@ -9,7 +9,7 @@
           <!-- 选项 -->
           <ul class="nav nav-tabs mb-3">
             <li class="nav-item">
-              <a class="nav-link position-relative active" href="/letter">朋友私信<span class="badge badge-danger">{{letterUnreadTotalCount}}</span></a>
+              <a class="nav-link position-relative active" href="/letter">朋友私信<span class="badge badge-danger" v-show="letterUnreadTotalCount !== 0">{{letterUnreadTotalCount}}</span></a>
             </li>
             <li class="nav-item">
               <a class="nav-link position-relative" href="notice.html">系统通知<span class="badge badge-danger">27</span></a>
@@ -28,20 +28,20 @@
                 </button>
               </div>
               <div class="modal-body">
-                <form>
+                <form :model = "sendForm">
                   <div class="form-group">
                     <label for="recipient-name" class="col-form-label">发给：</label>
-                    <input type="text" class="form-control" id="recipient-name">
+                    <input type="text" v-model="sendForm.toName" class="form-control" id="recipient-name">
                   </div>
                   <div class="form-group">
                     <label for="message-text" class="col-form-label">内容：</label>
-                    <textarea class="form-control" id="message-text" rows="10"></textarea>
+                    <textarea class="form-control" v-model="sendForm.content"  id="message-text" rows="10"></textarea>
                   </div>
                 </form>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-primary" id="sendBtn">发送</button>
+                <button type="button" @click="sendMessage" class="btn btn-primary" id="sendBtn">发送</button>
               </div>
             </div>
           </div>
@@ -53,7 +53,7 @@
               <div class="modal-header">
                 <h5 class="modal-title" id="hintModalLabel">提示</h5>
               </div>
-              <div class="modal-body" id="hintBody">
+              <div class="modal-body" id="hintBody" v-text="msg">
                 发送完毕!
               </div>
             </div>
@@ -101,6 +101,7 @@
 
 <script>
 import Header from "../components/Header";
+import qs from 'QS'
 export default {
   data () {
     return {
@@ -111,7 +112,12 @@ export default {
         rows: 100
       },
       letterUnreadTotalCount: 0,
-      conversations: []
+      conversations: [],
+      sendForm: {
+        toName: '',
+        content: ''
+      },
+      msg: '发送完毕!',
     }
   },
   components: {
@@ -152,8 +158,24 @@ export default {
         _this.page = res.data.page
       })
     },
+    // 去私信详情页的准备
     toDetail (conversationId) {
       sessionStorage.setItem("conversationId",conversationId)
+    },
+    sendMessage () {
+      const _this = this
+      _this.$axios.post(
+        "http://localhost:8081/communityPlatform/letter/send",
+        qs.stringify(_this.sendForm)
+      ).then(res => {
+        if (res.data.code === 1) {
+          _this.msg = res.data.msg
+        }else if (res.data.code === 0) {
+          _this.msg = '发送成功！'
+        }else if (res.data.code === 2) {
+          _this.msg = res.data.msg
+        }
+      })
     }
   }
 }

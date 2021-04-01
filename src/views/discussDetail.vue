@@ -134,7 +134,7 @@
         </el-pagination>
       </div>
       <!-- 回帖输入 -->
-      <div class="container mt-3" :model="replyPostForm" :rules="rules">
+      <div class="container mt-3" :model="replyPostForm">
         <form class="replyform">
           <p class="mt-3">
             <el-input
@@ -173,11 +173,6 @@ export default {
         entityId: 0,
         targetId: 0,
         userId: 0,
-      },
-      rules: {
-        content: [
-          { min: 1, max: 1000, message: '长度在 1 到 1000 个字符', trigger: 'blur' }
-        ]
       },
       page: {
         current: 1,
@@ -240,6 +235,7 @@ export default {
           path: '/blankPage',
           name: 'blankPage'
         })
+        _this.$store.state.blankPageTo = '/discussDetail'
         sessionStorage.setItem("click_postId",res.data.discussPostId)
       }
     })

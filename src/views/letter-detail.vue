@@ -26,20 +26,20 @@
                 </button>
               </div>
               <div class="modal-body">
-                <form>
+                <form :model = "sendForm">
                   <div class="form-group">
                     <label for="recipient-name" class="col-form-label">发给：</label>
-                    <input type="text" class="form-control" id="recipient-name" value="落基山脉下的闲人">
+                    <input type="text" class="form-control" id="recipient-name" :value="targetUser.username">
                   </div>
                   <div class="form-group">
                     <label for="message-text" class="col-form-label">内容：</label>
-                    <textarea class="form-control" id="message-text" rows="10"></textarea>
+                    <textarea class="form-control" v-model="sendForm.content" id="message-text" rows="10"></textarea>
                   </div>
                 </form>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-primary" id="sendBtn">发送</button>
+                <button type="button" @click="sendMessage" class="btn btn-primary" id="sendBtn">发送</button>
               </div>
             </div>
           </div>
@@ -51,7 +51,7 @@
               <div class="modal-header">
                 <h5 class="modal-title" id="hintModalLabel">提示</h5>
               </div>
-              <div class="modal-body" id="hintBody">
+              <div class="modal-body" id="hintBody" v-text="msg">
                 发送完毕!
               </div>
             </div>
@@ -68,7 +68,7 @@
               <div class="toast-header">
                 <strong class="mr-auto" v-text="letter.fromUser.username">落基山脉下的闲人</strong>
                 <small>{{letter.letter.createTime | dateformat('YYYY-MM-DD HH:mm:ss')}}</small>
-                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                <button type="button"  @click="dleMessage(letter.letter.conversationId,letter.letter.content)" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
@@ -96,6 +96,7 @@
 
 <script>
 import Header from "../components/Header";
+import qs from "QS";
 export default {
   data () {
     return {
@@ -106,7 +107,12 @@ export default {
         rows: 100
       },
       targetUser: {},
-      letters: []
+      letters: [],
+      sendForm: {
+        toName: '',
+        content: ''
+      },
+      msg: '发送成功！'
     }
   },
   components: {
@@ -136,6 +142,38 @@ export default {
         _this.targetUser = res.data.targetUser
         _this.letters = res.data.letters
         _this.page = res.data.page
+      })
+    },
+    sendMessage () {
+      const _this = this
+      _this.sendForm.toName = _this.targetUser.username
+      _this.$axios.post(
+        "http://localhost:8081/communityPlatform/letter/send",
+        qs.stringify(_this.sendForm)
+      ).then(res => {
+        if (res.data.code === 1) {
+          _this.msg = res.data.msg
+        }else if (res.data.code === 0) {
+          _this.msg = '发送成功！'
+        }else if (res.data.code === 2) {
+          _this.msg = res.data.msg
+        }
+      })
+    },
+    dleMessage (conversationId,content) {
+      const _this = this
+      let dle = {
+        conversationId,
+        content
+      }
+      _this.$axios.post(
+        "http://localhost:8081/communityPlatform/letter/delete",
+        qs.stringify(dle)
+      ).then(res => {
+        if (res.data.code === 0) {
+          // 考虑用监视
+          window.location.reload()
+        }
       })
     }
   }

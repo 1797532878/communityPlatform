@@ -5,7 +5,7 @@
 <script>
 export default {
   data () {
-    this.$router.push('/discussDetail')
+    this.$router.push(this.$store.state.blankPageTo)
     return {
 
     }
