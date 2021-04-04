@@ -27,7 +27,10 @@
             <div class="text-muted mt-3">
               发布于 <b>{{post.createTime | dateformat('YYYY-MM-DD HH:mm:ss')}}</b>
               <ul class="d-inline float-right">
-                <li class="d-inline ml-2"><a href="#" class="text-primary">赞 11</a></li>
+                <li class="d-inline ml-2"><a href="javascript:;" onclick="like(this,1)" class="text-primary">
+                  <input type="hidden" class="id" :value = "post.id"></input>
+                  <input type="hidden" class="userId" :value = "user.id"></input>
+                  <b v-text="likeStatus === 1 ? '已赞' : '赞' ">赞</b> <i v-text="likeCount">11</i></a></li>
                 <li class="d-inline ml-2">|</li>
                 <li class="d-inline ml-2"><a href="#replyform" class="text-primary">回帖 {{post.commentCount}}</a></li>
               </ul>
@@ -68,7 +71,10 @@
               <div class="mt-4 text-muted font-size-12">
                 <span>发布于 <b>{{comment.comment.createTime | dateformat('YYYY-MM-DD HH:mm:ss')}}</b></span>
                 <ul class="d-inline float-right">
-                  <li class="d-inline ml-2"><a href="#" class="text-primary">赞(1)</a></li>
+                  <li class="d-inline ml-2"><a href="javascript:;" onclick="like(this,2)" class="text-primary">
+                    <input type="hidden" class="id" :value = "comment.comment.id"></input>
+                    <input type="hidden" class="userId" :value = "user.id"></input>
+                    <b v-text="comment.likeStatus === 1 ? '已赞' : '赞' ">赞</b>(<i v-text="comment.likeCount">1</i>)</a></li>
                   <li class="d-inline ml-2">|</li>
                   <li class="d-inline ml-2"><a :href="'#hui' + index" data-toggle="collapse" class="text-primary">回复({{ comment.replyCount }})</a></li>
                 </ul>
@@ -91,7 +97,10 @@
                   <div class="mt-3">
                     <span>{{reply.reply.createTime | dateformat('YYYY-MM-DD HH:mm:ss')}}</span>
                     <ul class="d-inline float-right">
-                      <li class="d-inline ml-2"><a href="#" class="text-primary">赞(1)</a></li>
+                      <li class="d-inline ml-2"><a href="javascript:;" onclick="like(this,2)" class="text-primary">
+                        <input type="hidden" class="id" :value = "reply.reply.id"></input>
+                        <input type="hidden" class="userId" :value = "user.id"></input>
+                        <b v-text="reply.likeStatus === 1 ? '已赞' : '赞' ">赞</b>(<i v-text="reply.likeCount">1</i>)</a></li>
                       <li class="d-inline ml-2">|</li>
                       <li class="d-inline ml-2"><a :href="'#huifu' + index" data-toggle="collapse" class="text-primary">回复</a></li>
                     </ul>
@@ -154,10 +163,11 @@
     <!-- 尾部 -->
   </div>
 </template>
-
 <script>
 import Header from "../components/Header"
 import qs from 'QS'
+
+
 export default {
   components: {
     Header
@@ -167,6 +177,8 @@ export default {
       post: {},
       user: {},
       comments: [],
+      likeCount: 0,
+      likeStatus: 0,
       replyPostForm: {
         content: '',
         entityType: 0,
@@ -194,6 +206,8 @@ export default {
       _this.user = res.data.user
       _this.comments = res.data.comment
       _this.page = res.data.page
+      _this.likeCount = res.data.likeCount
+      _this.likeStatus = res.data.likeStatus
       console.log(_this.comments)
     })
   },
@@ -211,6 +225,8 @@ export default {
         _this.user = res.data.user
         _this.comments = res.data.comment
         _this.page = res.data.page
+        _this.likeCount = res.data.likeCount
+        _this.likeStatus = res.data.likeStatus
       })
     },
     replyPost (id,targetId,type) {
@@ -239,7 +255,7 @@ export default {
         sessionStorage.setItem("click_postId",res.data.discussPostId)
       }
     })
-    }
+    },
   }
 }
 </script>

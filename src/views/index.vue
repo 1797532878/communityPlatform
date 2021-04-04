@@ -76,7 +76,7 @@
                 <u class="mr-3" v-text="post.user.username">寒江雪</u> 发布于
                 <b>{{post.post.createTime | dateformat('YYYY-MM-DD HH:mm:ss')}}</b>
                 <ul class="d-inline float-right">
-                  <li class="d-inline ml-2">赞 11</li>
+                  <li class="d-inline ml-2">赞 {{ post.likeCount }}</li>
                   <li class="d-inline ml-2">|</li>
                   <li class="d-inline ml-2">回帖 {{ post.post.commentCount }}</li>
                 </ul>
