@@ -19,7 +19,7 @@
         </h6>
         <!-- 作者 -->
         <div class="media pb-3 border-bottom">
-          <a href="profile.html">
+          <a href="/profile" @click="toProfile(user.id)">
             <img :src="user.headerUrl" class="align-self-start mr-4 rounded-circle user-header" alt="用户头像" >
           </a>
           <div class="media-body">
@@ -29,7 +29,8 @@
               <ul class="d-inline float-right">
                 <li class="d-inline ml-2"><a href="javascript:;" onclick="like(this,1)" class="text-primary">
                   <input type="hidden" class="id" :value = "post.id"></input>
-                  <input type="hidden" class="userId" :value = "user.id"></input>
+                  <input type="hidden" class="entityUserId" :value = "post.userId"></input>
+                  <input type="hidden" class="userId" :value = "loginUserId"></input>
                   <b v-text="likeStatus === 1 ? '已赞' : '赞' ">赞</b> <i v-text="likeCount">11</i></a></li>
                 <li class="d-inline ml-2">|</li>
                 <li class="d-inline ml-2"><a href="#replyform" class="text-primary">回帖 {{post.commentCount}}</a></li>
@@ -57,7 +58,7 @@
         <ul class="list-unstyled mt-4">
           <!-- 第1条回帖 -->
           <li class="media pb-3 pt-3 mb-3 border-bottom" v-for="(comment,index) in comments">
-            <a href="profile.html">
+            <a href="/profile" @click="toProfile(comment.user.id)">
               <img :src="comment.user.headerUrl" class="align-self-start mr-4 rounded-circle user-header" alt="用户头像" >
             </a>
             <div class="media-body">
@@ -73,7 +74,8 @@
                 <ul class="d-inline float-right">
                   <li class="d-inline ml-2"><a href="javascript:;" onclick="like(this,2)" class="text-primary">
                     <input type="hidden" class="id" :value = "comment.comment.id"></input>
-                    <input type="hidden" class="userId" :value = "user.id"></input>
+                    <input type="hidden" class="entityUserId" :value = "comment.comment.userId"></input>
+                    <input type="hidden" class="userId" :value = "loginUserId"></input>
                     <b v-text="comment.likeStatus === 1 ? '已赞' : '赞' ">赞</b>(<i v-text="comment.likeCount">1</i>)</a></li>
                   <li class="d-inline ml-2">|</li>
                   <li class="d-inline ml-2"><a :href="'#hui' + index" data-toggle="collapse" class="text-primary">回复({{ comment.replyCount }})</a></li>
@@ -86,11 +88,11 @@
                 <li class="pb-3 pt-3 mb-3 border-bottom" v-for="(reply,index) in comment.replies">
                   <div>
                     <span v-if="reply.targetUser == null">
-                      <b class="text-info">{{ reply.user.username }}</b>:&nbsp;&nbsp;
+                      <a href="/profile" @click="toProfile(reply.user.id)"><b class="text-info">{{ reply.user.username }}</b></a>:&nbsp;&nbsp;
                     </span>
                     <span v-else>
-                      <i class="text-info">{{reply.targetUser.username}}</i>回复
-                      <b class="text-info">{{ reply.user.username }}</b>:&nbsp;&nbsp;
+                      <a href="/profile" @click="toProfile(reply.targetUser.id)"><i class="text-info">{{reply.targetUser.username}}</i>回复</a>
+                      <a href="/profile" @click="toProfile(reply.user.id)"><b class="text-info">{{ reply.user.username }}</b></a>:&nbsp;&nbsp;
                     </span>
                     <span>{{ reply.reply.content }}</span>
                   </div>
@@ -99,7 +101,8 @@
                     <ul class="d-inline float-right">
                       <li class="d-inline ml-2"><a href="javascript:;" onclick="like(this,2)" class="text-primary">
                         <input type="hidden" class="id" :value = "reply.reply.id"></input>
-                        <input type="hidden" class="userId" :value = "user.id"></input>
+                        <input type="hidden" class="userId" :value = "loginUserId"></input>
+                        <input type="hidden" class="entityUserId" :value = "reply.reply.userId"></input>
                         <b v-text="reply.likeStatus === 1 ? '已赞' : '赞' ">赞</b>(<i v-text="reply.likeCount">1</i>)</a></li>
                       <li class="d-inline ml-2">|</li>
                       <li class="d-inline ml-2"><a :href="'#huifu' + index" data-toggle="collapse" class="text-primary">回复</a></li>
@@ -176,6 +179,7 @@ export default {
     return {
       post: {},
       user: {},
+      loginUserId: 0,
       comments: [],
       likeCount: 0,
       likeStatus: 0,
@@ -201,6 +205,7 @@ export default {
       "http://localhost:8081/communityPlatform/discuss/detail/" + id,
       _this.page
     ).then(res => {
+      console.log('discussDetail:----------')
       console.log(res)
       _this.post = res.data.post
       _this.user = res.data.user
@@ -208,7 +213,9 @@ export default {
       _this.page = res.data.page
       _this.likeCount = res.data.likeCount
       _this.likeStatus = res.data.likeStatus
+      _this.loginUserId = localStorage.getItem('userId')
       console.log(_this.comments)
+      console.log('discussDetail:end')
     })
   },
   methods: {
@@ -256,6 +263,9 @@ export default {
       }
     })
     },
+    toProfile (profileUserId) {
+      sessionStorage.setItem("profileUserId",profileUserId)
+    }
   }
 }
 </script>

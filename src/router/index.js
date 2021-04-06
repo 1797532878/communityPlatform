@@ -9,6 +9,9 @@ import discussDetail from "../views/discussDetail";
 import blankPage from "../views/blankPage";
 import letter from "../views/letter";
 import letterDetail from "../views/letter-detail"
+import profile from "../views/profile";
+import followee from "../views/followee";
+import follower from "../views/follower";
 
 Vue.use(Router)
 
@@ -63,6 +66,21 @@ const router =  new Router({
       path: '/letterDetail',
       name: 'letterDetail',
       component: letterDetail
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: profile
+    },
+    {
+      path: '/followee',
+      name: 'followee',
+      component: followee
+    },
+    {
+      path: '/follower',
+      name: 'follower',
+      component: follower
     }
   ]
 })
@@ -73,6 +91,16 @@ router.beforeEach((to, from, next) => {
   const isLogin = sessionStorage.getItem('isLogin')
   // 如果token为空，强制跳转到登录页面；否则，直接放行
   if (to.path === '/setting') {
+    if (!isLogin) return next('/login')
+  } else if (to.path === '/discussDetail'){
+    if (!isLogin) return next('/login')
+  }else if (to.path === '/profile'){
+    if (!isLogin) return next('/login')
+  }else if (to.path === '/letter'){
+    if (!isLogin) return next('/login')
+  }else if (to.path === '/followee'){
+    if (!isLogin) return next('/login')
+  }else if (to.path === '/follower'){
     if (!isLogin) return next('/login')
   } else {
     // 如果访问的是登录页面（无需权限），直接放行

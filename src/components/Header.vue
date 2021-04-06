@@ -29,7 +29,7 @@
                   <img :src="user.headerUrl" class="rounded-circle" style="width:30px;"/>
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <a class="dropdown-item text-center" href="profile.html">个人主页</a>
+                  <a class="dropdown-item text-center" href="/profile" @click="toProfile">个人主页</a>
                   <a class="dropdown-item text-center" href="/setting">账号设置</a>
                   <a class="dropdown-item text-center" @click="logout()" href="#">退出登录</a>
                   <div class="dropdown-divider"></div>
@@ -56,10 +56,7 @@ export default {
       activeIndex: '1',
       activeIndex2: '1',
       isLogin: false,
-      user: {
-        username: '',
-        headerUrl: ''
-      }
+      user: {}
     };
   },
   created() {
@@ -67,13 +64,14 @@ export default {
     _this.$axios.get(
       "http://localhost:8081/communityPlatform/confirmLogin"
     ).then( res => {
-      console.log(res)
+      //console.log(res)
       if (res.data.code === 200) {
         _this.isLogin = true
         _this.user = res.data.user
-        console.log(_this.user)
+        //console.log(_this.user)
         _this.$store.state.userId = _this.user.userId
         localStorage.setItem("userId",res.data.user.id)
+        sessionStorage.setItem("loginUser",res.data.user)
       }else {
         _this.isLogin = false
       }
@@ -86,13 +84,16 @@ export default {
         ).then( res => {
             if (res.data.code === 200){
               sessionStorage.clear()
+              localStorage.setItem("userId",0)
               _this.$router.push("/login")
             }else {
               _this.$message.error("退出失败");
             }
         })
-      }
-
+      },
+    toProfile () {
+        sessionStorage.setItem("profileUserId",this.user.id)
+    }
   }
 }
 </script>

@@ -63,12 +63,12 @@
         <!-- 帖子列表 -->
         <ul class="list-unstyled">
           <li class="media pb-3 pt-3 mb-3 border-bottom" v-for="(post,index) in posts">
-            <a href="site/profile.html">
+            <a href="/profile" @click="toProfile(post.user.id)">
               <img :src="post.user.headerUrl" class="mr-4 rounded-circle" alt="用户头像" style="width:50px;height:50px;">
             </a>
             <div class="media-body">
               <h6 class="mt-0 mb-3" >
-                <a href="#" @click="changeClickId(post.post.id)" v-html="post.post.title" >备战春招，面试刷题跟他复习，一个月全搞定！</a>
+                <a href="/discussDetail" @click="changeClickId(post.post.id)" v-html="post.post.title" >备战春招，面试刷题跟他复习，一个月全搞定！</a>
                 <span class="badge badge-secondary bg-primary" v-show="post.post.type === 1">置顶</span>
                 <span class="badge badge-secondary bg-danger" v-show="post.post.status === 1">精华</span>
               </h6>
@@ -122,7 +122,8 @@ export default {
       pub : {
         title: '',
         content: ''
-      }
+      },
+      profileUserId: 0
     }
   },
   created() {
@@ -161,8 +162,10 @@ export default {
     },
     changeClickId (id) {
       this.$store.state.click_postId = id
-      this.$router.push("/discussDetail")
       sessionStorage.setItem("click_postId",id)
+    },
+    toProfile(profileUserId) {
+      sessionStorage.setItem("profileUserId",profileUserId)
     }
   }
 }

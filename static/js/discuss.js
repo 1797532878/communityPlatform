@@ -2,9 +2,11 @@
 function like (btn,entityType) {
   let entityId = $(btn).find('.id').val();
   let userId = $(btn).find('.userId').val();
+  let entityUserId = $(btn).find('.entityUserId').val();
   $.post(
     "http://localhost:8081/communityPlatform/like",
-    {"entityType":entityType,"entityId":entityId,"userId":userId},
+    {"entityType":entityType,"entityId":entityId,"userId":userId,
+    "entityUserId":entityUserId},
     function (data) {
       data = $.parseJSON(data);
       if (data.code === 0) {
