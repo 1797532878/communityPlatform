@@ -12,6 +12,8 @@ import letterDetail from "../views/letter-detail"
 import profile from "../views/profile";
 import followee from "../views/followee";
 import follower from "../views/follower";
+import notice from "../views/notice";
+import noticeDetail from "../views/notice-detail"
 
 Vue.use(Router)
 
@@ -81,6 +83,16 @@ const router =  new Router({
       path: '/follower',
       name: 'follower',
       component: follower
+    },
+    {
+      path: '/notice',
+      name: 'notice',
+      component: notice
+    },
+    {
+      path: '/noticeDetail',
+      name: 'noticeDetail',
+      component: noticeDetail
     }
   ]
 })
@@ -97,6 +109,8 @@ router.beforeEach((to, from, next) => {
   }else if (to.path === '/profile'){
     if (!isLogin) return next('/login')
   }else if (to.path === '/letter'){
+    if (!isLogin) return next('/login')
+  }else if (to.path === '/notice'){
     if (!isLogin) return next('/login')
   }else if (to.path === '/followee'){
     if (!isLogin) return next('/login')

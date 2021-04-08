@@ -31,6 +31,7 @@
                   <input type="hidden" class="id" :value = "post.id"></input>
                   <input type="hidden" class="entityUserId" :value = "post.userId"></input>
                   <input type="hidden" class="userId" :value = "loginUserId"></input>
+                  <input type="hidden" class="postId" :value = "post.id"></input>
                   <b v-text="likeStatus === 1 ? '已赞' : '赞' ">赞</b> <i v-text="likeCount">11</i></a></li>
                 <li class="d-inline ml-2">|</li>
                 <li class="d-inline ml-2"><a href="#replyform" class="text-primary">回帖 {{post.commentCount}}</a></li>
@@ -76,6 +77,7 @@
                     <input type="hidden" class="id" :value = "comment.comment.id"></input>
                     <input type="hidden" class="entityUserId" :value = "comment.comment.userId"></input>
                     <input type="hidden" class="userId" :value = "loginUserId"></input>
+                    <input type="hidden" class="postId" :value = "post.id"></input>
                     <b v-text="comment.likeStatus === 1 ? '已赞' : '赞' ">赞</b>(<i v-text="comment.likeCount">1</i>)</a></li>
                   <li class="d-inline ml-2">|</li>
                   <li class="d-inline ml-2"><a :href="'#hui' + index" data-toggle="collapse" class="text-primary">回复({{ comment.replyCount }})</a></li>
@@ -103,6 +105,7 @@
                         <input type="hidden" class="id" :value = "reply.reply.id"></input>
                         <input type="hidden" class="userId" :value = "loginUserId"></input>
                         <input type="hidden" class="entityUserId" :value = "reply.reply.userId"></input>
+                        <input type="hidden" class="postId" :value = "post.id"></input>
                         <b v-text="reply.likeStatus === 1 ? '已赞' : '赞' ">赞</b>(<i v-text="reply.likeCount">1</i>)</a></li>
                       <li class="d-inline ml-2">|</li>
                       <li class="d-inline ml-2"><a :href="'#huifu' + index" data-toggle="collapse" class="text-primary">回复</a></li>
@@ -238,7 +241,7 @@ export default {
     },
     replyPost (id,targetId,type) {
       const _this = this
-      this.replyPostForm.userId = _this.user.id
+      this.replyPostForm.userId = localStorage.getItem("userId")
       //注意这里的id类型
       this.replyPostForm.entityId = id
       this.replyPostForm.entityType = type

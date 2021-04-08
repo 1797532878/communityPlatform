@@ -12,7 +12,7 @@
               <a class="nav-link position-relative active" href="/letter">朋友私信<span class="badge badge-danger" v-show="letterUnreadTotalCount !== 0">{{letterUnreadTotalCount}}</span></a>
             </li>
             <li class="nav-item">
-              <a class="nav-link position-relative" href="notice.html">系统通知<span class="badge badge-danger">27</span></a>
+              <a class="nav-link position-relative" href="/notice">系统通知<span class="badge badge-danger" v-show="noticeUnreadCount !== 0" v-text="noticeUnreadCount">27</span></a>
             </li>
           </ul>
           <button type="button" class="btn btn-primary btn-sm position-absolute rt-0" data-toggle="modal" data-target="#sendModal">发私信</button>
@@ -112,6 +112,7 @@ export default {
         rows: 100
       },
       letterUnreadTotalCount: 0,
+      noticeUnreadCount: 0,
       conversations: [],
       sendForm: {
         toName: '',
@@ -135,8 +136,10 @@ export default {
         _this.$router.push("/login")
       }
       _this.letterUnreadTotalCount = res.data.letterUnreadTotalCount
+      _this.noticeUnreadCount = res.data.noticeUnreadCount
       _this.conversations = res.data.conversations
       _this.page = res.data.page
+      localStorage.setItem("unreadCount",_this.letterUnreadTotalCount + _this.noticeUnreadCount)
     })
   },
   methods: {
@@ -154,6 +157,7 @@ export default {
           _this.$router.push("/login")
         }
         _this.letterUnreadTotalCount = res.data.letterUnreadTotalCount
+        _this.noticeUnreadCount = res.data.noticeUnreadCount
         _this.conversations = res.data.conversations
         _this.page = res.data.page
       })
