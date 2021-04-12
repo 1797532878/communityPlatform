@@ -39,9 +39,9 @@
               </li>
             </ul>
             <!-- 搜索 -->
-            <form class="form-inline my-2 my-lg-0" action="search.html">
-              <input class="form-control mr-sm-2" type="search" aria-label="Search" />
-              <button class="btn btn-outline-light my-2 my-sm-0" type="submit">搜索</button>
+            <form class="form-inline my-2 my-lg-0" :model="search" :rules = "rules">
+              <input class="form-control mr-sm-2" v-model="search.keyword" aria-label="Search" />
+              <button class="btn btn-outline-light my-2 my-sm-0"  @click="submit('search')" type="button">搜索</button>
             </form>
           </div>
         </nav>
@@ -52,6 +52,7 @@
 
 <script>
 
+import qs from "QS";
 export default {
   data() {
     return {
@@ -60,6 +61,15 @@ export default {
       isLogin: false,
       user: {},
       unreadCount: 0,
+      search: {
+        keyword: '',
+      },
+      rules: {
+        keyword: [
+          { required: true, message: '请输入原始密码', trigger: 'blur' },
+          { min: 1, max: 15, message: '长度在 1 到 15 个字符', trigger: 'blur' }
+        ]
+      }
     };
   },
   created() {
@@ -97,6 +107,18 @@ export default {
       },
     toProfile () {
         sessionStorage.setItem("profileUserId",this.user.id)
+    },
+    submit () {
+      sessionStorage.setItem("keyword",this.search.keyword)
+      if (this.$route.name === 'search') {
+        this.$router.replace({
+          path: '/blankPage',
+          name: 'blankPage'
+        })
+        this.$store.state.blankPageTo = '/search'
+      }else {
+        this.$router.push("/search")
+      }
     }
   }
 }

@@ -14,6 +14,7 @@ import followee from "../views/followee";
 import follower from "../views/follower";
 import notice from "../views/notice";
 import noticeDetail from "../views/notice-detail"
+import Search from "../views/Search";
 
 Vue.use(Router)
 
@@ -93,6 +94,11 @@ const router =  new Router({
       path: '/noticeDetail',
       name: 'noticeDetail',
       component: noticeDetail
+    },
+    {
+      path: '/search',
+      name: 'search',
+      component: Search
     }
   ]
 })

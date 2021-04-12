@@ -25,10 +25,10 @@
             <div class="media-body">
               <h6 class="mt-0 mb-3">
                 <span>评论</span>
-                <span class="float-right text-muted font-size-12">{{commentNotice.message.createTime | dateformat('YYYY-MM-DD HH:mm:ss')}}</span>
+                <span class="float-right text-muted font-size-12">{{commentMessage.createTime | dateformat('YYYY-MM-DD HH:mm:ss')}}</span>
               </h6>
               <div>
-                <a href="/noticeDetail" @click="topic(commentNotice.message.conversationId)">用户 <i v-text="commentNotice.user.username">nowcoder</i> 评论了你的
+                <a href="/noticeDetail" @click="topic(commentMessage.conversationId)">用户 <i v-text="commentUser.username">nowcoder</i> 评论了你的
                   <b v-text="commentNotice.entityType===1 ? '帖子' : '回复' ">帖子</b> ...</a>
                 <ul class="d-inline font-size-12 float-right">
                   <li class="d-inline ml-2"><span class="text-primary">共 <i v-text="commentNotice.count">3</i> 条会话</span></li>
@@ -42,10 +42,10 @@
             <div class="media-body">
               <h6 class="mt-0 mb-3">
                 <span>赞</span>
-                <span class="float-right text-muted font-size-12">{{likeNotice.message.createTime | dateformat('YYYY-MM-DD HH:mm:ss')}}</span>
+                <span class="float-right text-muted font-size-12">{{likeMessage.createTime | dateformat('YYYY-MM-DD HH:mm:ss')}}</span>
               </h6>
               <div>
-                <a href="/noticeDetail" @click="topic(likeNotice.message.conversationId)">用户 <i v-text="likeNotice.user.username">nowcoder</i> 点赞了你的
+                <a href="/noticeDetail" @click="topic(likeMessage.conversationId)">用户 <i v-text="likeUser.username">nowcoder</i> 点赞了你的
                   <b v-text="likeNotice.entityType === 1 ? '帖子' : '回复' ">帖子</b> ...</a>
                 <ul class="d-inline font-size-12 float-right">
                   <li class="d-inline ml-2"><span class="text-primary">共 <i v-text="likeNotice.count">3</i> 条会话</span></li>
@@ -59,10 +59,10 @@
             <div class="media-body">
               <h6 class="mt-0 mb-3">
                 <span>关注</span>
-                <span class="float-right text-muted font-size-12">{{followNotice.message.createTime | dateformat('YYYY-MM-DD HH:mm:ss')}}</span>
+                <span class="float-right text-muted font-size-12">{{followMessage.createTime | dateformat('YYYY-MM-DD HH:mm:ss')}}</span>
               </h6>
               <div>
-                <a href="/noticeDetail" @click="topic(followNotice.message.conversationId)">用户 <i v-text="followNotice.user.username">nowcoder</i> 关注了你 ...</a>
+                <a href="/noticeDetail" @click="topic(followMessage.conversationId)">用户 <i v-text="followUser.username">nowcoder</i> 关注了你 ...</a>
                 <ul class="d-inline font-size-12 float-right">
                   <li class="d-inline ml-2"><span class="text-primary">共 <i v-text="followNotice.count">3</i> 条会话</span></li>
                 </ul>
@@ -91,7 +91,13 @@ export default {
       likeNotice: {},
       letterUnreadCount: 0,
       noticeUnreadCount: 0,
-      followNotice: {}
+      followNotice: {},
+      commentMessage: {},
+      likeMessage:{},
+      followMessage:{},
+      commentUser: {},
+      likeUser:{},
+      followUser:{}
     }
   },
   created() {
@@ -104,6 +110,12 @@ export default {
       _this.commentNotice = res.data.commentNotice
       _this.likeNotice = res.data.likeNotice
       _this.followNotice = res.data.followNotice
+      _this.commentMessage = res.data.commentNotice.message
+      _this.likeMessage = res.data.likeNotice.message
+      _this.followMessage = res.data.followNotice.message
+      _this.commentUser = res.data.commentNotice.user
+      _this.likeUser = res.data.likeNotice.user
+      _this.followUser = res.data.followNotice.user
       _this.letterUnreadCount = res.data.letterUnreadCount
       _this.noticeUnreadCount = res.data.noticeUnreadCount
     })
