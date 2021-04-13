@@ -12,9 +12,9 @@
           <img src="http://static.nowcoder.com/images/img/icons/ico-discuss.png"/>
           <span>{{post.content}}</span>
           <div class="float-right">
-            <button type="button" class="btn btn-danger btn-sm">置顶</button>
-            <button type="button" class="btn btn-danger btn-sm">加精</button>
-            <button type="button" class="btn btn-danger btn-sm">删除</button>
+            <button type="button" class="btn btn-danger btn-sm" v-show="loginUser.type == 1 || loginUser.type == 2" @click="top(post.id)" :disabled="post.type == 1">置顶</button>
+            <button type="button" class="btn btn-danger btn-sm" v-show="loginUser.type == 1 || loginUser.type == 2" @click="wonderful(post.id)" :disabled="post.status == 1">加精</button>
+            <button type="button" class="btn btn-danger btn-sm" v-show="loginUser.type == 1" @click="dle(post.id)" :disabled="post.status == 2">删除</button>
           </div>
         </h6>
         <!-- 作者 -->
@@ -193,6 +193,7 @@ export default {
         targetId: 0,
         userId: 0,
       },
+      loginUser: {},
       page: {
         current: 1,
         limit: 10,
@@ -217,6 +218,7 @@ export default {
       _this.likeCount = res.data.likeCount
       _this.likeStatus = res.data.likeStatus
       _this.loginUserId = localStorage.getItem('userId')
+      _this.loginUser = res.data.loginUser
       console.log(_this.comments)
       console.log('discussDetail:end')
     })
@@ -268,6 +270,35 @@ export default {
     },
     toProfile (profileUserId) {
       sessionStorage.setItem("profileUserId",profileUserId)
+    },
+    top (id) {
+      const _this = this
+      _this.$axios.post(
+        "http://localhost:8081/communityPlatform/discuss/top",
+        qs.stringify({id})
+      ).then(res => {
+        if (res.data.code === 0) {
+          window.location.reload()
+        }
+      })
+    },
+    wonderful (id) {
+      const _this = this
+      _this.$axios.post(
+        "http://localhost:8081/communityPlatform/discuss/wonderful",
+        qs.stringify({id})
+      ).then(res => {
+        window.location.reload()
+      })
+    },
+    dle (id) {
+      const _this = this
+      _this.$axios.post(
+        "http://localhost:8081/communityPlatform/discuss/delete",
+        qs.stringify({id})
+      ).then(res => {
+        _this.$router.push('/index')
+      })
     }
   }
 }

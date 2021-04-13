@@ -116,7 +116,9 @@ router.beforeEach((to, from, next) => {
     if (!isLogin) return next('/login')
   }else if (to.path === '/letter'){
     if (!isLogin) return next('/login')
-  }else if (to.path === '/notice'){
+  }else if (to.path === '/letter/list'){
+    if (!isLogin) return next('/login')
+  } else if (to.path === '/notice'){
     if (!isLogin) return next('/login')
   }else if (to.path === '/followee'){
     if (!isLogin) return next('/login')

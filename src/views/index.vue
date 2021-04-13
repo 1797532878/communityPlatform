@@ -9,10 +9,10 @@
           <!-- 筛选条件 -->
           <ul class="nav nav-tabs mb-3">
             <li class="nav-item">
-              <a class="nav-link active" href="#">最新</a>
+              <a class="nav-link" :class="orderMode == 0 ? 'active' : '' " href="javascript:;" @click="orderByNew">最新</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">最热</a>
+              <a class="nav-link" :class="orderMode == 1 ? 'active' : ''" href="javascript:;" @click="orderByHot">最热</a>
             </li>
           </ul>
           <button type="button" class="btn btn-primary btn-sm position-absolute rt-0" data-toggle="modal" v-show="isLogin" data-target="#publishModal">我要发布</button>
@@ -119,6 +119,7 @@ export default {
         rows: 100
       },
       isLogin: sessionStorage.getItem("isLogin"),
+      orderMode: 0,
       pub : {
         title: '',
         content: ''
@@ -133,19 +134,25 @@ export default {
       console.log(res)
       _this.posts = res.data
       _this.page = res.data[0].page
+      _this.orderMode = res.data[0].orderMode
     })
   },
   methods: {
     Page (current) {
       const _this = this
-      this.page.current = current
+      const page = _this.page
+      page.current = current
+      const orderMode = _this.orderMode
       _this.$axios.post("http://localhost:8081/communityPlatform/index",
-        this.page
+      qs.stringify({
+        page,orderMode,current
+      })
       ).then(res => {
         console.log(res)
         this.page.current = res.data[0].page.current
         this.page.rows = res.data[0].page.rows
         this.posts = res.data
+        this.orderMode = res.data[0].orderMode
       })
     },
     submit () {
@@ -166,6 +173,34 @@ export default {
     },
     toProfile(profileUserId) {
       sessionStorage.setItem("profileUserId",profileUserId)
+    },
+    orderByNew () {
+      this.orderMode = 0;
+      const _this = this
+      _this.$axios.get("http://localhost:8081/communityPlatform/index",
+      ).then(res => {
+        console.log(res)
+        _this.posts = res.data
+        _this.page = res.data[0].page
+        _this.orderMode = res.data[0].orderMode
+      })
+    },
+    orderByHot () {
+      this.orderMode = 1;
+      const _this = this
+      const page = _this.page
+      const orderMode = _this.orderMode
+      _this.$axios.post("http://localhost:8081/communityPlatform/index",
+        qs.stringify({
+          page,orderMode
+        })
+      ).then(res => {
+        console.log(res)
+        this.page.current = res.data[0].page.current
+        this.page.rows = res.data[0].page.rows
+        this.posts = res.data
+        this.orderMode = res.data[0].orderMode
+      })
     }
   }
 }
