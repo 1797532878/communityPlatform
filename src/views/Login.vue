@@ -86,6 +86,7 @@ export default {
       $("#kaptcha").attr("src",path);
     },
     Login () {
+      localStorage.setItem("show",'1')
       //预存this
       const _this = this
         _this.$axios.post(

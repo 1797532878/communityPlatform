@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import '@/assets/css/header.css'
+
 import Index from  '../views/index'
 import Login from "../views/Login"
 import Register from "../views/Register"
@@ -15,6 +17,16 @@ import follower from "../views/follower";
 import notice from "../views/notice";
 import noticeDetail from "../views/notice-detail"
 import Search from "../views/Search";
+import myPosts from "../views/myPosts";
+import myReply from "../views/myReply";
+
+import Shop from '../views/shop/shop'
+import Item from '../views/shop/item'
+import Cart from '../views/shop/cart'
+import CheckOut from '../views/shop/checkout'
+import Payment from '../views/shop/payment'
+import Account from '../views/shop/account'
+import Order from '../views/account/order'
 
 Vue.use(Router)
 
@@ -99,6 +111,51 @@ const router =  new Router({
       path: '/search',
       name: 'search',
       component: Search
+    },
+    {
+      path: '/myPosts',
+      name: 'myPosts',
+      component: myPosts
+    },
+    {
+      path: '/myReply',
+      name: 'myReply',
+      component: myReply
+    },
+    // shop
+    {
+      path: '/shop',
+      name: 'Shop',
+      component: Shop
+    },
+    {
+      path: '/item',
+      name: 'Item',
+      component: Item
+    },
+    {
+      path: '/cart',
+      name: 'Cart',
+      component: Cart
+    },
+    {
+      path: '/checkout',
+      name: 'CheckOut',
+      component: CheckOut
+    },
+    {
+      path: '/payment',
+      name: 'Payment',
+      component: Payment
+    },
+    {
+      path: '/account',
+      component: Account,
+      children: [{
+        path: '',
+        name: 'Account',
+        component: Order
+      }]
     }
   ]
 })

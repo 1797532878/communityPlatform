@@ -10,10 +10,10 @@
           <!-- 选项 -->
           <ul class="nav nav-tabs mb-3">
             <li class="nav-item">
-              <a class="nav-link position-relative " href="/letter">朋友私信<span class="badge badge-danger" v-show="letterUnreadCount !== 0">{{letterUnreadCount}}</span></a>
+              <a class="nav-link position-relative " href="javascript:;" @click="toLetter">朋友私信<span class="badge badge-danger" v-show="letterUnreadCount !== 0">{{letterUnreadCount}}</span></a>
             </li>
             <li class="nav-item">
-              <a class="nav-link position-relative active" href="/notice">系统通知<span class="badge badge-danger" v-show="noticeUnreadCount !== 0" v-text="noticeUnreadCount">27</span></a>
+              <a class="nav-link position-relative active" href="javascript:;" @click="toNotice">系统通知<span class="badge badge-danger" v-show="noticeUnreadCount !== 0" v-text="noticeUnreadCount">27</span></a>
             </li>
           </ul>
         </div>
@@ -31,7 +31,7 @@
                 <a href="/noticeDetail" @click="topic(commentMessage.conversationId)">用户 <i v-text="commentUser.username">nowcoder</i> 评论了你的
                   <b v-text="commentNotice.entityType===1 ? '帖子' : '回复' ">帖子</b> ...</a>
                 <ul class="d-inline font-size-12 float-right">
-                  <li class="d-inline ml-2"><span class="text-primary">共 <i v-text="commentNotice.count">3</i> 条会话</span></li>
+                  <li class="d-inline ml-2"><span class="text-primary">共 <i v-text="commentNotice.count == null ? 0 : commentNotice.count">3</i> 条会话</span></li>
                 </ul>
               </div>
             </div>
@@ -48,7 +48,7 @@
                 <a href="/noticeDetail" @click="topic(likeMessage.conversationId)">用户 <i v-text="likeUser.username">nowcoder</i> 点赞了你的
                   <b v-text="likeNotice.entityType === 1 ? '帖子' : '回复' ">帖子</b> ...</a>
                 <ul class="d-inline font-size-12 float-right">
-                  <li class="d-inline ml-2"><span class="text-primary">共 <i v-text="likeNotice.count">3</i> 条会话</span></li>
+                  <li class="d-inline ml-2"><span class="text-primary">共 <i v-text="likeNotice.count == null ? 0 : likeNotice.count">3</i> 条会话</span></li>
                 </ul>
               </div>
             </div>
@@ -64,7 +64,7 @@
               <div>
                 <a href="/noticeDetail" @click="topic(followMessage.conversationId)">用户 <i v-text="followUser.username">nowcoder</i> 关注了你 ...</a>
                 <ul class="d-inline font-size-12 float-right">
-                  <li class="d-inline ml-2"><span class="text-primary">共 <i v-text="followNotice.count">3</i> 条会话</span></li>
+                  <li class="d-inline ml-2"><span class="text-primary">共 <i v-text="followNotice.count == null ? 0 : followNotice.count">3</i> 条会话</span></li>
                 </ul>
               </div>
             </div>
@@ -107,15 +107,21 @@ export default {
       "http://localhost:8081/communityPlatform/notice/list",
     ).then(res=>{
       console.log(res)
-      _this.commentNotice = res.data.commentNotice
-      _this.likeNotice = res.data.likeNotice
-      _this.followNotice = res.data.followNotice
-      _this.commentMessage = res.data.commentNotice.message
-      _this.likeMessage = res.data.likeNotice.message
-      _this.followMessage = res.data.followNotice.message
-      _this.commentUser = res.data.commentNotice.user
-      _this.likeUser = res.data.likeNotice.user
-      _this.followUser = res.data.followNotice.user
+      if (res.data.commentNotice != null){
+        _this.commentNotice = res.data.commentNotice
+        _this.commentMessage = res.data.commentNotice.message
+        _this.commentUser = res.data.commentNotice.user
+      }
+      if (res.data.likeNotice != null) {
+        _this.likeNotice = res.data.likeNotice
+        _this.likeMessage = res.data.likeNotice.message
+        _this.likeUser = res.data.likeNotice.user
+      }
+      if (res.data.followNotice != null) {
+        _this.followNotice = res.data.followNotice
+        _this.followMessage = res.data.followNotice.message
+        _this.followUser = res.data.followNotice.user
+      }
       _this.letterUnreadCount = res.data.letterUnreadCount
       _this.noticeUnreadCount = res.data.noticeUnreadCount
     })
@@ -123,6 +129,12 @@ export default {
   methods: {
     topic (topic) {
       sessionStorage.setItem("topic",topic)
+    },
+    toLetter() {
+      this.$router.push("/letter")
+    },
+    toNotice () {
+      this.$router.push("/notice")
     }
   }
 }

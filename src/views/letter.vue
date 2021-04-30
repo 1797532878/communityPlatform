@@ -9,10 +9,10 @@
           <!-- 选项 -->
           <ul class="nav nav-tabs mb-3">
             <li class="nav-item">
-              <a class="nav-link position-relative active" href="/letter">朋友私信<span class="badge badge-danger" v-show="letterUnreadTotalCount !== 0">{{letterUnreadTotalCount}}</span></a>
+              <a class="nav-link position-relative active" href="javascript:;" @click="toLetter">朋友私信<span class="badge badge-danger" v-show="letterUnreadTotalCount !== 0">{{letterUnreadTotalCount}}</span></a>
             </li>
             <li class="nav-item">
-              <a class="nav-link position-relative" href="/notice">系统通知<span class="badge badge-danger" v-show="noticeUnreadCount !== 0" v-text="noticeUnreadCount">27</span></a>
+              <a class="nav-link position-relative" href="javascript:;" @click="toNotice">系统通知<span class="badge badge-danger" v-show="noticeUnreadCount !== 0" v-text="noticeUnreadCount">27</span></a>
             </li>
           </ul>
           <button type="button" class="btn btn-primary btn-sm position-absolute rt-0" data-toggle="modal" data-target="#sendModal">发私信</button>
@@ -180,6 +180,12 @@ export default {
           _this.msg = res.data.msg
         }
       })
+    },
+    toLetter() {
+      this.$router.push("/letter")
+    },
+    toNotice () {
+      this.$router.push("/notice")
     }
   }
 }

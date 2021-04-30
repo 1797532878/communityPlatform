@@ -6,19 +6,7 @@
     <div class="main">
       <div class="container">
         <!-- 选项 -->
-        <div class="position-relative">
-          <ul class="nav nav-tabs">
-            <li class="nav-item">
-              <a class="nav-link active" href="/profile">个人信息</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="my-post.html">我的帖子</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="my-reply.html">我的回复</a>
-            </li>
-          </ul>
-        </div>
+        <Profile></Profile>
         <!-- 个人信息 -->
         <div class="media mt-5">
           <img :src="user.headerUrl" class="align-self-start mr-4 rounded-circle" alt="用户头像" style="width:50px;">
@@ -49,6 +37,7 @@
 
 <script>
 import Header from "../components/Header";
+import Profile from "../components/profile"
 export default {
   data () {
     return {
@@ -61,7 +50,8 @@ export default {
     }
   },
   components: {
-    Header
+    Header,
+    Profile
   },
   created() {
       const _this = this
